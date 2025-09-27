@@ -70,28 +70,29 @@ def scrape_fbref_curl_cffi(url, table_id=None):
 
 
 # Main Parameters
-year_start = 1992
+year_start = 2017
 year_end = 2025
-table_id = f"sched_{year_start}-{year_start+1}_9_1"
-
+table_id = f"stats_keeper"
 ys, ye = year_start, year_end  # for filename
 
 #Main Execution
-url = f"https://fbref.com/en/comps/9/{year_start}-{year_start+1}/schedule/{year_start}-{year_start+1}-Premier-League-Scores-and-Fixtures"
+url = f"https://fbref.com/en/comps/9/{year_start}-{year_start+1}/keepers/{year_start}-{year_start+1}-Premier-League-Stats"
 df = scrape_fbref_curl_cffi(url, table_id=table_id)
 
-# Table Specific Mofidications (uncomment based on table_id if needed)
+# add the year as a column
 df.insert(0, 'Year', year_start)
+
+# Table Specific Mofidications (uncomment based on table_id if needed)
 year_start += 1
 
 while year_start < year_end:
-    url = f"https://fbref.com/en/comps/9/{year_start}-{year_start+1}/schedule/{year_start}-{year_start+1}-Premier-League-Scores-and-Fixtures"
-    
-    # Table Specific Mofidications (uncomment based on table_id if needed)
-    table_id = f"sched_{year_start}-{year_start+1}_9_1"
-    df_next = scrape_fbref_curl_cffi(url, table_id=table_id)
+    url = f"https://fbref.com/en/comps/9/{year_start}-{year_start+1}/keepers/{year_start}-{year_start+1}-Premier-League-Stats"
 
     # Table Specific Mofidications (uncomment based on table_id if needed)
+    # table_id = f"sched_{year_start}-{year_start+1}_9_1"
+    df_next = scrape_fbref_curl_cffi(url, table_id=table_id)
+
+    # Add the year as a column
     df_next.insert(0, 'Year', year_start) 
     
     # append each year to main df
@@ -100,7 +101,7 @@ while year_start < year_end:
 
     # Progress update
     print(f"Scraped up to year {year_start-1} for the {table_id} table")
-    
+
     # Uncomment below for debugging purposes
     df.to_csv(f"results/inprogress.csv", index=False)
 
@@ -121,12 +122,25 @@ table_id = stats_standard
 For Link 2 [1 Table]
 url = f"https://fbref.com/en/comps/9/{year_start}-{year_start+1}/{year_start}-{year_start+1}-Premier-League-Stats"
 table_id = f"results{year_start}-{year_start+1}91_overall"
-df_next.insert(0, 'Year', year_start) IS NEEDED
 
 For Link 3 [1 Table]
 url = f"https://fbref.com/en/comps/9/{year_start}-{year_start+1}/schedule/{year_start}-{year_start+1}-Premier-League-Scores-and-Fixtures"
 table_id = f"sched_{year_start}-{year_start+1}_9_1"
 Table Specific Mofidications (uncomment based on table_id if needed)
-df_next.insert(0, 'Year', year_start) IS NEEDED
 table_id = f"sched_{year_start}-{year_start+1}_9_1"
+
+For Link 4 [2 Tables] 2017, 2025
+url = f"https://fbref.com/en/comps/9/{year_start}-{year_start+1}/gca/{year_start}-{year_start+1}-Premier-League-Stats"
+table_id = f"stats_squads_gca_for"
+table_id = f"stats_gca"
+
+For Link 5 [2 Tables] 2017, 2025
+url = f"https://fbref.com/en/comps/9/{year_start}-{year_start+1}/defense/{year_start}-{year_start+1}-Premier-League-Stats"
+table_id = f"stats_squads_defense_for"
+table_id = f"stats_defense"
+
+For Link 6 [2 Tables] 2017, 2025
+url = f"https://fbref.com/en/comps/9/{year_start}-{year_start+1}/keepers/{year_start}-{year_start+1}-Premier-League-Stats"
+table_id = f"stats_squads_keeper_for"
+table_id = f"stats_keeper"
 '''
