@@ -69,3 +69,11 @@ First for each team
 And then for each player
 > Table: stats_keeper
 > Result: results/stats_keeper_2017-2018_to_2025-2026.csv
+
+### Transfermarkt
+
+This code works a lot different than FBref due to a more relaxed monitoring service. This code can simply be run normally. 
+
+> python3 scrape_transfermarkt.py
+
+The primary purpose of getting this data is to monitor the strength of each squad by the size of it and the financial strength of each team (sum of the values of all their players). However, an important realization is to normalize the market values of all the teams which is done in normalize_transfermarkt.py
