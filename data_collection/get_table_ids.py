@@ -46,7 +46,7 @@ def list_table_ids(url):
         return []
 
 # Usage:
-url = "https://fbref.com/en/comps/9/2025-2026/stats/2025-2026-Premier-League-Stats"
+url = "https://fbref.com/en/comps/9/1992-1993/schedule/1992-1993-Premier-League-Scores-and-Fixtures"
 table_ids = list_table_ids(url)
 print(table_ids)
 

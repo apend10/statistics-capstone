@@ -70,26 +70,63 @@ def scrape_fbref_curl_cffi(url, table_id=None):
 
 
 # Main Parameters
-table_id = "stats_standard"
-year_start = 2017
+year_start = 1992
 year_end = 2025
+table_id = f"sched_{year_start}-{year_start+1}_9_1"
+
+ys, ye = year_start, year_end  # for filename
 
 #Main Execution
-url = f"https://fbref.com/en/comps/9/{year_start}-{year_start+1}/stats/{year_start}-{year_start+1}-Premier-League-Stats"
+url = f"https://fbref.com/en/comps/9/{year_start}-{year_start+1}/schedule/{year_start}-{year_start+1}-Premier-League-Scores-and-Fixtures"
 df = scrape_fbref_curl_cffi(url, table_id=table_id)
+
+# Table Specific Mofidications (uncomment based on table_id if needed)
 df.insert(0, 'Year', year_start)
 year_start += 1
 
 while year_start < year_end:
-    url = f"https://fbref.com/en/comps/9/{year_start}-{year_start+1}/stats/{year_start}-{year_start+1}-Premier-League-Stats"
+    url = f"https://fbref.com/en/comps/9/{year_start}-{year_start+1}/schedule/{year_start}-{year_start+1}-Premier-League-Scores-and-Fixtures"
+    
+    # Table Specific Mofidications (uncomment based on table_id if needed)
+    table_id = f"sched_{year_start}-{year_start+1}_9_1"
     df_next = scrape_fbref_curl_cffi(url, table_id=table_id)
-    df_next.insert(0, 'Year', year_start)
+
+    # Table Specific Mofidications (uncomment based on table_id if needed)
+    df_next.insert(0, 'Year', year_start) 
+    
+    # append each year to main df
     df = pd.concat([df, df_next], ignore_index=True)
     year_start += 1
+
+    # Progress update
+    print(f"Scraped up to year {year_start-1} for the {table_id} table")
+    
+    # Uncomment below for debugging purposes
+    df.to_csv(f"results/inprogress.csv", index=False)
 
 if df is not None:
     #print(df)
     os.makedirs("results", exist_ok=True)
-    df.to_csv(f"results/{table_id}_{year_start}-{year_start+1}_to_{year_end+1}.csv", index=False)
+    df.to_csv(f"results/{table_id}_{ys}-{ys+1}_to_{ye}-{ye+1}.csv", index=False)
 
-# ~/.pyenv/versions/3.10.1/bin/python /Users/apendela10/STAT482/statistics-capstone/data_collection/scrape_fbref.py
+'''
+Notes for running and reproducing results: 
+~/.pyenv/versions/3.10.1/bin/python /Users/apendela10/STAT482/statistics-capstone/data_collection/scrape_fbref.py
+
+For Link 1 [2 Tables]
+url = f"https://fbref.com/en/comps/9/{year_start}-{year_start+1}/stats/{year_start}-{year_start+1}-Premier-League-Stats"
+table_id = stats_squads_standard_for
+table_id = stats_standard
+
+For Link 2 [1 Table]
+url = f"https://fbref.com/en/comps/9/{year_start}-{year_start+1}/{year_start}-{year_start+1}-Premier-League-Stats"
+table_id = f"results{year_start}-{year_start+1}91_overall"
+df_next.insert(0, 'Year', year_start) IS NEEDED
+
+For Link 3 [1 Table]
+url = f"https://fbref.com/en/comps/9/{year_start}-{year_start+1}/schedule/{year_start}-{year_start+1}-Premier-League-Scores-and-Fixtures"
+table_id = f"sched_{year_start}-{year_start+1}_9_1"
+Table Specific Mofidications (uncomment based on table_id if needed)
+df_next.insert(0, 'Year', year_start) IS NEEDED
+table_id = f"sched_{year_start}-{year_start+1}_9_1"
+'''
