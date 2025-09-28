@@ -10,7 +10,7 @@ def scrape_transfermarkt_players(url):
     ua = UserAgent()
     headers = {"User-Agent": ua.random}
 
-    for attempt in range(10):
+    for attempt in range(20):
         try:
             page = requests.get(url, headers=headers, timeout=15)
             if page.status_code == 200:
@@ -116,6 +116,8 @@ if __name__ == "__main__":
     td = pd.read_csv("results/transfermarkt_data_raw.csv")
     data = pd.DataFrame(columns=["Name", "Position", "Market Value", "Year", "Team"])
     data.to_csv("results/transfermarkt_data_players.csv", index=False)
+
+    retry = []
     
     for year in range(2004, 2026):
         print("Starting year:", year)
@@ -128,9 +130,33 @@ if __name__ == "__main__":
             data["Team"] = team
 
             data.to_csv("results/transfermarkt_data_players.csv", mode='a', header=False, index=False)
+
+            if len(data) == 0:
+                retry.append((url, team, year))
             
             print(random.randint(1, 20) * '-', f"got data for {team} @ ({year}) with {len(data)} players")
 
+    # 90% of the time the above code will work, this makes sure that the rest 10% is also covered
+    while retry:
+        print("Retrying for", len(retry), "teams")
+        print("Retry is below")
+        print(retry)
+        print("-" * 25)
+        retry_again = []
+        for url, team, year in retry:
+            data = scrape_transfermarkt_players(url)
+
+            data["Year"] = year
+            data["Team"] = team
+
+            data.to_csv("results/transfermarkt_data_players.csv", mode='a', header=False, index=False)
+
+
             if len(data) == 0:
-                print(url)
+                retry_again.append((url, team, year))
+            
+            print(random.randint(1, 20) * '-', f"got data for {team} @ ({year}) with {len(data)} players")
+        retry = retry_again
+
+
 
