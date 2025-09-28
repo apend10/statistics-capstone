@@ -77,3 +77,5 @@ This code works a lot different than FBref due to a more relaxed monitoring serv
 > python3 scrape_transfermarkt.py
 
 The primary purpose of getting this data is to monitor the strength of each squad by the size of it and the financial strength of each team (sum of the values of all their players). However, an important realization is to normalize the market values of all the teams which is done in normalize_transfermarkt.py
+
+The last thing we need is to get the rosters of all the teams since 1992/93 to get the market values of each player of each team, not just the total of team. Overall, this will give us a lot of great data to do analysis on. 
