@@ -3,6 +3,7 @@ Here is everything we did to get the data we got from FBREF.
 The goal is to get all the data we need for our project first from FBREF and then from Transfermarkt. 
 
 ### FBREF
+Note: The first row of the scraped CSVs from FBREF may need to be deleted since there are two column names being extracted in the multi table!
 
 ##### Link 1: https://fbref.com/en/comps/9/2025-2026/stats/2025-2026-Premier-League-Stats
 
