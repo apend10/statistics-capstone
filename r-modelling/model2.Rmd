@@ -1,0 +1,215 @@
+# Model 2 - Mixed Effects Modelling
+
+Main Idea: For model 1, we took every observation as i.i.d. However, there may be other effects that we haven't measured in our model such as team effects or even player effects. Our data consists of Squad Size and Average Market Value of each team both of which are Normalized by Average. There is 1 data point for each team for each year. This means that there are team effects and possibly year effects that we can encounter. The team effect is the first and main focus since some teams may have special patterns and trends. For example, if a team finishes 18, 19, or 20th in the league they are relegated to the EFL Champsionship (the 2nd division of English Football). This means that there are only a handful of teams that have remained in the Premier League since its inception (1992-93). This team effect may be crucial!
+
+Resources/Links for Inspiration and Learning
+
+-   <https://meghan.rbind.io/blog/2022-06-28-a-beginners-guide-to-mixed-effects-models/>
+
+-   <https://mfviz.com/hierarchical-models/>
+
+```{r}
+# Install packages if needed
+# install.packages(c("lme4", "lmerTest", "dplyr", "ggplot2"))
+
+library(lme4)      # For mixed effects models
+library(lmerTest)  # For p-values
+library(dplyr)     # For data manipulation
+library(ggplot2)   # For visualization
+```
+
+1.  Load and Prepare the Data
+
+```{r}
+# Load data
+df <- read.csv("/Users/apendela10/STAT482/statistics-capstone/r-modelling/mlr_data.csv")
+
+# Check data structure
+cat("Total observations:", nrow(df), "\n")
+cat("Number of unique teams:", length(unique(df$Team)), "\n")
+
+# Check team representation
+team_counts <- df %>%
+  group_by(Team) %>%
+  summarise(n_obs = n()) %>%
+  arrange(desc(n_obs))
+
+cat("\nMin observations per team:", min(team_counts$n_obs), "\n")
+cat("Max observations per team:", max(team_counts$n_obs), "\n")
+cat("Mean observations per team:", round(mean(team_counts$n_obs), 1), "\n")
+
+# Count teams by observation frequency
+cat("\nTeam representation:\n")
+cat("  Teams with 1 observation: ", sum(team_counts$n_obs == 1), "\n")
+cat("  Teams with 2 observations: ", sum(team_counts$n_obs == 2), "\n")
+cat("  Teams with 3-5 observations:", sum(team_counts$n_obs >= 3 & team_counts$n_obs <= 5), "\n")
+cat("  Teams with 6+ observations:", sum(team_counts$n_obs >= 6), "\n")
+```
+
+This shows that we have 21 years of data which end in the 2024-25 season. With 3 teams relegated each year and 3 teams being promoted from the championship, there are 44 unique teams in the Premier League in this 21 year time span.
+
+2.  Fitting the Mixed Effects Model
+
+```{r}
+# Fit model with random intercept for Team
+model <- lmer(Points ~ Squad_Size_Normalized_by_Avg + 
+                Average_Market_Value_Normalized_by_Avg + 
+                (1 | Team),
+              data = df,
+              REML = TRUE)
+
+# Display summary
+cat("\nModel Summary:\n")
+print(summary(model))
+```
+
+3.  Extracting Model Parameters
+
+```{r}
+# Fixed effects
+fixed_effects <- fixef(model)
+print(fixed_effects)
+
+# Random effects (team-specific intercepts)
+random_effects <- ranef(model)$Team
+random_effects$Team <- rownames(random_effects)
+colnames(random_effects)[1] <- "Random_Intercept"
+random_effects <- random_effects[order(-random_effects$Random_Intercept), ]
+
+# Calculate ICC
+variance_components <- as.data.frame(VarCorr(model))
+between_var <- variance_components$vcov[1]  # Team variance
+within_var <- variance_components$vcov[2]   # Residual variance
+icc <- between_var / (between_var + within_var)
+
+cat("Between-team variance (τ²):", round(between_var, 3), "\n")
+cat("Within-team variance (σ²):  ", round(within_var, 3), "\n")
+cat("ICC (Intraclass Correlation):", round(icc, 3), "\n")
+cat(sprintf("\n→ %.1f%% of variance is BETWEEN teams\n", icc * 100))
+cat(sprintf("→ %.1f%% of variance is WITHIN teams (year-to-year)\n", (1-icc) * 100))
+```
+
+4.  Visualizing the Random Effects
+
+```{r}
+
+random_effects$color <- ifelse(random_effects$Random_Intercept > 0, "positive", "negative")
+
+p <- ggplot(random_effects, aes(x = reorder(Team, Random_Intercept), 
+                                y = Random_Intercept, 
+                                fill = color)) +
+  geom_bar(stat = "identity", alpha = 0.7) +
+  coord_flip() +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black", size = 1) +
+  scale_fill_manual(values = c("negative" = "red", "positive" = "green")) +
+  labs(title = "Team-Specific Random Effects",
+       subtitle = "Deviation from Average After Controlling for Predictors",
+       x = "Team",
+       y = "Random Intercept (Team Effect)") +
+  theme_minimal() +
+  theme(legend.position = "none",
+        plot.title = element_text(face = "bold", size = 14),
+        axis.text.y = element_text(size = 8))
+
+print(p)
+
+# Save plot
+ggsave("team_random_effects.png", plot = p, width = 10, height = 12, dpi = 300)
+cat("✓ Plot saved as 'team_random_effects.png'\n")
+
+```
+
+5.  Loading 2025-26 Season Data
+
+```{r}
+# Load 2025 inference data
+df_2025 <- read.csv("/Users/apendela10/STAT482/statistics-capstone/r-modelling/2025_inference.csv")
+
+cat("Number of teams in 2025-26 season:", nrow(df_2025), "\n")
+cat("\n2025-26 Teams:\n")
+print(df_2025$Team)
+
+predict_with_uncertainty <- function(new_data, model, random_effects) {
+  # Get fixed effects
+  fixed_pred <- predict(model, newdata = new_data, re.form = NA)  # Population level
+  
+  # Get variance components
+  vc <- as.data.frame(VarCorr(model))
+  tau_sq <- vc$vcov[1]  # Between-team variance
+  sigma_sq <- vc$vcov[2]  # Within-team variance
+  
+  # Prepare results
+  results <- data.frame(
+    Team = new_data$Team,
+    Squad_Size_Norm = new_data$Squad_Size_Normalized_by_Avg,
+    Market_Value_Norm = new_data$Average_Market_Value_Normalized_by_Avg,
+    Fixed_Effect_Pred = fixed_pred
+  )
+  
+  # Check if team has random effect
+  results$Has_Random_Effect <- tolower(results$Team) %in% tolower(rownames(random_effects))
+  
+  # Add team-specific predictions
+  results$Team_Effect <- 0
+  results$Predicted_Points <- results$Fixed_Effect_Pred
+  results$SE <- sqrt(sigma_sq + tau_sq)  # Default to new team SE
+  results$Uncertainty <- "Higher (New Team)"
+  
+  for (i in 1:nrow(results)) {
+    team_lower <- tolower(results$Team[i])
+    if (team_lower %in% tolower(rownames(random_effects))) {
+      # Team has random effect
+      team_effect <- random_effects[tolower(rownames(random_effects)) == team_lower, "Random_Intercept"]
+      results$Team_Effect[i] <- team_effect
+      results$Predicted_Points[i] <- results$Fixed_Effect_Pred[i] + team_effect
+      results$SE[i] <- sqrt(sigma_sq)  # Known team has lower SE
+      results$Uncertainty[i] <- "Lower (Known Team)"
+    }
+  }
+
+  # Add 95% prediction intervals
+  results$CI_Lower <- results$Predicted_Points - 1.96 * results$SE
+  results$CI_Upper <- results$Predicted_Points + 1.96 * results$SE
+  
+  return(results)
+}
+```
+
+```{r}
+predictions <- predict_with_uncertainty(df_2025, model, random_effects)
+
+# Sort by predicted points
+predictions <- predictions %>%
+  arrange(desc(Predicted_Points)) %>%
+  mutate(Predicted_Position = row_number())
+
+predictions_display <- predictions %>%
+  select(Predicted_Position, Team, Predicted_Points, Team_Effect, Uncertainty)
+
+print(predictions_display, row.names = FALSE)
+```
+
+```{r}
+# Prediction Intervals
+
+predictions_ci <- predictions %>%
+  select(Predicted_Position, Team, Predicted_Points, CI_Lower, CI_Upper, Uncertainty)
+
+print(predictions_ci, row.names = FALSE)
+```
+
+```{r}
+# Check for convergence warnings
+if (!is.null(model@optinfo$conv$lme4$messages)) {
+  cat("⚠ Convergence warnings detected:\n")
+  print(model@optinfo$conv$lme4$messages)
+} else {
+  cat("✓ Model converged successfully with no warnings\n")
+}
+
+# AIC and BIC
+cat("\nModel Fit Statistics:\n")
+cat("AIC:", round(AIC(model), 2), "\n")
+cat("BIC:", round(BIC(model), 2), "\n")
+cat("Log-Likelihood:", round(logLik(model), 2), "\n")
+```
