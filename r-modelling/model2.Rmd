@@ -22,7 +22,7 @@ library(ggplot2)   # For visualization
 
 ```{r}
 # Load data
-df <- read.csv("/Users/apendela10/STAT482/statistics-capstone/r-modelling/mlr_data.csv")
+df <- read.csv("/Users/apendela10/STAT482/statistics-capstone/r-modelling/transfermarkt_financial_final.csv")
 
 # Check data structure
 cat("Total observations:", nrow(df), "\n")
@@ -213,3 +213,21 @@ cat("AIC:", round(AIC(model), 2), "\n")
 cat("BIC:", round(BIC(model), 2), "\n")
 cat("Log-Likelihood:", round(logLik(model), 2), "\n")
 ```
+
+Ideas to improve the model
+
+-   year effect...
+
+Ideas to improve this model with further data...
+
+-   attendance data (/league_table_1992-1993_to_2025-2026.csv)
+
+<!-- -->
+
+-   on field performance data from the season before
+
+    -   top scorer (/league_table_1992-1993_to_2025-2026.csv)
+
+    -   xG,xGA,xGD (/league_table_1992-1993_to_2025-2026.csv)
+
+    -   

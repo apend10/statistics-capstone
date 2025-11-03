@@ -1,5 +1,4 @@
-Year,Unnamed: 0_level_0,Unnamed: 1_level_0,Unnamed: 2_level_0,Tackles,Tackles,Tackles,Tackles,Tackles,Challenges,Challenges,Challenges,Challenges,Blocks,Blocks,Blocks,Unnamed: 15_level_0,Unnamed: 16_level_0,Unnamed: 17_level_0,Unnamed: 18_level_0
-,Squad,# Pl,90s,Tkl,TklW,Def 3rd,Mid 3rd,Att 3rd,Tkl,Att,Tkl%,Lost,Blocks,Sh,Pass,Int,Tkl+Int,Clr,Err
+Year,Squad,# Pl,90s,Tackles-Tkl,Tackles-TklW,Tackles-Def_3rd,Tackles-Mid_3rd,Tackles-Att_3rd,Challenges-Tkl,Challenges-Att,Challenges-Tkl%,Challenges-Lost,Blocks-Blocks,Blocks-Sh,Blocks-Pass,Blocks-Int,Blocks-Tkl+Int,Blocks-Clr,Blocks-Err
 2017,Arsenal,30,38.0,623,425,312,227,84,218,581,37.5,363,372,103,269,427,1050,879,33
 2017,Bournemouth,22,38.0,509,324,272,187,50,198,525,37.7,327,453,160,293,367,876,1129,25
 2017,Brighton,24,38.0,599,380,360,205,34,205,642,31.9,437,430,190,240,449,1048,1182,18

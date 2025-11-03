@@ -1,5 +1,4 @@
-Year,Unnamed: 0_level_0,Unnamed: 1_level_0,Unnamed: 2_level_0,SCA,SCA,SCA Types,SCA Types,SCA Types,SCA Types,SCA Types,SCA Types,GCA,GCA,GCA Types,GCA Types,GCA Types,GCA Types,GCA Types,GCA Types
-,Squad,# Pl,90s,SCA,SCA90,PassLive,PassDead,TO,Sh,Fld,Def,GCA,GCA90,PassLive,PassDead,TO,Sh,Fld,Def
+Year,Squad,# Pl,90s,SCA-SCA,SCA-SCA90,SCA_Types-PassLive,SCA_Types-PassDead,SCA_Types-TO,SCA_Types-Sh,SCA_Types-Fld,SCA_Types-Def,GCA_GCA,GCA_GCA90,GCA-Types_PassLive,GCA-Types_PassDead,GCA-Types_TO,GCA-Types_Sh,GCA-Types_Fld,GCA-Types_Def
 2017,Arsenal,30,38.0,1079,28.39,830,53,70,65,53,8,131,3.45,95,8,7,12,7,2
 2017,Bournemouth,22,38.0,809,21.29,582,78,53,42,39,15,83,2.18,53,8,5,8,7,2
 2017,Brighton,24,38.0,684,18.0,489,73,46,37,31,8,60,1.58,43,3,4,4,6,0
