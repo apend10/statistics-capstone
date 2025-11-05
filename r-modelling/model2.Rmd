@@ -18,6 +18,10 @@ library(dplyr)     # For data manipulation
 library(ggplot2)   # For visualization
 ```
 
+## Model 2.1
+
+This is a first version of the fixed effects model which ONLY financial and demographic data. We are using transfermarkt_financial_final.csv here. The data is from 2004/05 to 2024/25. This is 21 years of data.
+
 1.  Load and Prepare the Data
 
 ```{r}
@@ -214,20 +218,12 @@ cat("BIC:", round(BIC(model), 2), "\n")
 cat("Log-Likelihood:", round(logLik(model), 2), "\n")
 ```
 
-Ideas to improve the model
+## Model 2.2
 
--   year effect...
+This is a second version of the mixed effects model with only **performance based data.** The data comes from final_combined_squad_stats.csv. All the data is from the 2017-18 to 2024-25 season which is a lot less than model 2.1!
 
-Ideas to improve this model with further data...
+First, we will do a quick data set exploration to understand what all these columns are.
 
--   attendance data (/league_table_1992-1993_to_2025-2026.csv)
+```{r}
 
-<!-- -->
-
--   on field performance data from the season before
-
-    -   top scorer (/league_table_1992-1993_to_2025-2026.csv)
-
-    -   xG,xGA,xGD (/league_table_1992-1993_to_2025-2026.csv)
-
-    -   
+```
