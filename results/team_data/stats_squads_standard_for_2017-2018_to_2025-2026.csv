@@ -1,4 +1,4 @@
-,Squad,# Pl,Age,Poss,MP,Starts,Min,90s,Gls,Ast,G+A,G-PK,PK,PKatt,CrdY,CrdR,xG,npxG,xAG,npxG+xAG,PrgC,PrgP,Gls,Ast,G+A,G-PK,G+A-PK,xG,xAG,xG+xAG,npxG,npxG+xAG
+Year,Squad,# Pl,Age,Poss,Playing-Time_MP,Playing-Time_Starts,Playing-Time_Min,Playing-Time_90s,Performance_Gls,Performance_Ast,Performance_G+A,Performance_G-PK,Performance_PK,Performance_PKatt,Performance_CrdY,Performance_CrdR,Expected_xG,Expected_npxG,Expected_xAG,Expected_npxG+xAG,Progression_PrgC,Progression_PrgP,Gls,Ast,G+A,G-PK,G+A-PK,xG,xAG,xG+xAG,npxG,npxG+xAG
 2017,Arsenal,30,26.8,61.4,38,418,3420,38.0,73,61,134,69,4,5,57,,68.3,64.3,53.3,117.6,915,2223,1.92,1.61,3.53,1.82,3.42,1.8,1.4,3.2,1.69,3.1
 2017,Bournemouth,22,26.9,48.1,38,418,3420,38.0,45,36,81,42,3,3,57,,38.8,36.4,29.1,65.5,702,1526,1.18,0.95,2.13,1.11,2.05,1.02,0.77,1.79,0.96,1.72
 2017,Brighton,24,27.5,43.7,38,418,3420,38.0,33,25,58,28,5,7,54,,37.0,31.8,26.2,58.0,523,1230,0.87,0.66,1.53,0.74,1.39,0.97,0.69,1.66,0.84,1.53
